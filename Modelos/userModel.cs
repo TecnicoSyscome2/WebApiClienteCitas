@@ -9,50 +9,34 @@ using System.Threading.Tasks;
 namespace WebApi.Citas.ClientesApp.Modelos
 {
     [Table("usuariosregistrados", Schema = "dbo")]
-    public class userModel
+    public class userModel : Logins
     {
         //Crear una nueva tabla de usuarios
-        [Key]
-        [StringLength(450)]
-        public string Id { get; set; }
+        [Key]    
+        [Column("id")]
+        public int Id { get; set; }
 
         [StringLength(256)]
+        [Column("username")]
         public string UserName { get; set; }
 
         [StringLength(256)]
-        public string NormalizedUserName { get; set; }
-
-        [StringLength(256)]
+        [Column("email")]
+        [Required]
         public string Email { get; set; }
 
-        [StringLength(256)]
-        public string NormalizedEmail { get; set; }
+        [Column("password")]
+        [Required]
+        public string Password { get; set; }
 
-       // public bool EmailConfirmed { get; set; }
-
-        public string PasswordHash { get; set; }
-
-        //public string SecurityStamp { get; set; }
-
-        //public string ConcurrencyStamp { get; set; }
-
-        //public string PhoneNumber { get; set; }
-
-        //public bool PhoneNumberConfirmed { get; set; }
-
-        //public bool TwoFactorEnabled { get; set; }
-
-        //public DateTimeOffset? LockoutEnd { get; set; }
-
-        //public bool LockoutEnabled { get; set; }
-
-        //public int AccessFailedCount { get; set; }
-
+        [Column("empresaid")]
         public int? EmpresaId { get; set; }
 
+        [Column("idrol")]
         public int? idrol{ get; set; }
 
         public int? activo { get; set; }
+
         [Column("fecharegistro")]
         public DateTime? registerdate { get; set; }
     }
@@ -60,5 +44,11 @@ namespace WebApi.Citas.ClientesApp.Modelos
     {
         ACTIVO = 1,
         INACTIVO = 2
+    }
+
+    public interface Logins
+    {
+        string Email { get; set; }
+        string Password { get; set; }
     }
 }

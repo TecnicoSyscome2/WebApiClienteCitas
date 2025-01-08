@@ -38,7 +38,7 @@ namespace ApiRest.Controllers
      
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] userModel pUsuario)
+        public async Task<ActionResult> Login([FromBody] Logins pUsuario)
         {
 
             var option = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -46,13 +46,13 @@ namespace ApiRest.Controllers
             userModel usuario = JsonSerializer.Deserialize<userModel>(strUsuario, option);
             // codigo para autorizar el usuario por JWT
             userModel usuario_auth = await _userRepository.LoginAsync(usuario);
-            if (usuario_auth != null && usuario_auth.Id.IsNullOrEmpty() && usuario.UserName == usuario_auth.UserName)
+            if (usuario_auth != null && usuario_auth.Id > 0 && usuario.UserName == usuario_auth.UserName)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(8));
                 var token = authService.Authenticate(usuario_auth);
                 _cache.Set("Nombre", usuario.UserName, cacheEntryOptions);
-                _cache.Set("Usuario", usuario.NormalizedUserName, cacheEntryOptions);
+                _cache.Set("Usuario", usuario.Email, cacheEntryOptions);
                 return Ok(token.ToString());
             }
             else

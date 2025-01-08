@@ -14,7 +14,7 @@ namespace WebApi.Citas.ClientesApp.Modelos
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
        // [ForeignKey("clientes")]
         [Column("cliente_id")]

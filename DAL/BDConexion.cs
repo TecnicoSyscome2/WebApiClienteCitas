@@ -11,12 +11,12 @@ namespace WebApi.Citas.ClientesApp.DAL
     public class BDConexion : DbContext
     {
         // Define las entidades del modelo
-        public DbSet<Clientes> Clientes { get; set; }
-        public DbSet<CitasModel> Citas { get; set; }
-        public DbSet<AsesoresModel> Asesores { get; set; }
-        public DbSet<empresaModel> Empresas { get; set; }
-        public DbSet<ProductosModel> Productos { get; set; }
-        public DbSet<CitasDetModel> CitasDet { get; set; }
+        public DbSet<Clientes> clientes { get; set; }
+        public DbSet<CitasModel> citas { get; set; }
+        public DbSet<AsesoresModel> asesores { get; set; }
+        public DbSet<empresaModel> empresas { get; set; }
+        public DbSet<ProductosModel> productos { get; set; }
+        public DbSet<CitasDetModel> citasdet { get; set; }
         public DbSet<userModel> registeredusers { get; set; }
 
         // Constructor que utiliza las opciones configuradas externamente

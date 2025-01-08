@@ -8,22 +8,18 @@ using System.Threading.Tasks;
 
 namespace WebApi.Citas.ClientesApp.Modelos
 {
-    [Table("rolesusuarios")]
+    [Table("roles")]
     public class rolModel
     {
         //crear tabla de roles
         [Key]
         [StringLength(450)]
-        public string Id { get; set; }
+        public string id { get; set; }
 
         [StringLength(256)]
-        public string Name { get; set; }
+        public string nombre { get; set; }
 
-        [StringLength(256)]
-        public string NormalizedName { get; set; }
-
-        public string ConcurrencyStamp { get; set; }
-
+        public string descripcion { get; set; }
 
     }
 }

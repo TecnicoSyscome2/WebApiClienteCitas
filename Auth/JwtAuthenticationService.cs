@@ -12,15 +12,17 @@ namespace WebApi.Citas.ClientesApp.Auth
 {
     public class JwtAuthenticationService : IautenticacionService
     {
-        private string _key = "e7f31c2c-34c3-4aba-8f12-ce41b022e3b8";
+        private readonly string _key = "123as-dsf23-sfsdf-213123";
 
         public JwtAuthenticationService(string key)
         {
-            _key = key;
+         _key = key;
+       
         }
 
         public string Authenticate(userModel pUsuario)
         {
+            //string _key = Convert.ToString(_configuration.GetSection("_Key"));
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -28,7 +30,7 @@ namespace WebApi.Citas.ClientesApp.Auth
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim( "UserName", pUsuario.UserName),
-                    new Claim( "PasswordHash", pUsuario.PasswordHash )
+                    new Claim( "Password", pUsuario.Password )
                 }),
                 IssuedAt = DateTime.UtcNow.AddHours(8),
                 NotBefore = DateTime.UtcNow.AddMilliseconds(1),
@@ -37,10 +39,6 @@ namespace WebApi.Citas.ClientesApp.Auth
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
-
-
         }
-
-
     }
 }

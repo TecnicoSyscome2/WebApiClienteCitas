@@ -50,8 +50,9 @@ namespace WebApi.Citas.ClientesApp.DAL
                 throw new Exception("Usuario no encontrado.");
 
             usuario.idrol = pUsuario.idrol;
+            usuario.EmpresaId = pUsuario.EmpresaId;
             usuario.UserName = pUsuario.UserName;
-            usuario.NormalizedUserName = pUsuario.NormalizedUserName;
+          
             usuario.Email = pUsuario.Email;
             usuario.activo = pUsuario.activo;
 
@@ -59,7 +60,7 @@ namespace WebApi.Citas.ClientesApp.DAL
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(string idUsuario)
+        public async Task<int> DeleteAsync(int idUsuario)
         {
             var usuario = await _context.registeredusers.FirstOrDefaultAsync(s => s.Id == idUsuario);
             if (usuario == null)
@@ -69,7 +70,7 @@ namespace WebApi.Citas.ClientesApp.DAL
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<userModel> ObtainByIdAsync(string idUsuario)
+        public async Task<userModel> ObtainByIdAsync(int idUsuario)
         {
             var usuario = await _context.registeredusers.FirstOrDefaultAsync(s => s.Id == idUsuario);
             if (usuario == null)
@@ -86,14 +87,12 @@ namespace WebApi.Citas.ClientesApp.DAL
 
         private static IQueryable<userModel> QuerySelect(IQueryable<userModel> query, userModel filter)
         {
-            if (!filter.Id.IsNullOrEmpty())
+            if (filter.Id > 0)
                 query = query.Where(s => s.Id == filter.Id);
             if (filter.idrol > 0)
                 query = query.Where(s => s.idrol == filter.idrol);
             if (!string.IsNullOrWhiteSpace(filter.UserName))
-                query = query.Where(s => s.UserName.Contains(filter.UserName));
-            if (!string.IsNullOrWhiteSpace(filter.NormalizedUserName))
-                query = query.Where(s => s.NormalizedUserName.Contains(filter.NormalizedUserName));
+                query = query.Where(s => s.UserName.Contains(filter.UserName));         
             if (filter.activo > 0)
                 query = query.Where(s => s.activo == filter.activo);
             if (filter.registerdate.HasValue && filter.registerdate.Value.Year > 1000)
@@ -134,24 +133,24 @@ namespace WebApi.Citas.ClientesApp.DAL
             EncriptarMD5(user);
             return await _context.registeredusers.FirstOrDefaultAsync(s =>
                 s.UserName== user.UserName &&
-                s.PasswordHash == user.PasswordHash &&
+                s.Password == user.Password &&
                 s.activo == (int)Estatus_Usuario.ACTIVO);
         }
 
         public async Task<int> ChangePasswordAsync(userModel user, string oldPassword)
         {
-            var oldPassHash = new userModel { PasswordHash = oldPassword };
+            var oldPassHash = new userModel { Password = oldPassword };
             EncriptarMD5(oldPassHash);
 
             var existingUser = await _context.registeredusers.FirstOrDefaultAsync(s => s.Id == user.Id);
             if (existingUser == null)
                 throw new Exception("Usuario no encontrado.");
 
-            if (oldPassHash.PasswordHash != existingUser.PasswordHash)
+            if (oldPassHash.Password != existingUser.Password)
                 throw new Exception("El password actual es incorrecto.");
 
             EncriptarMD5(user);
-            existingUser.PasswordHash = user.PasswordHash;
+            existingUser.Password = user.Password;
             _context.Update(existingUser);
 
             return await _context.SaveChangesAsync();
@@ -162,9 +161,9 @@ namespace WebApi.Citas.ClientesApp.DAL
         {
             using (var md5 = MD5.Create())
             {
-                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(pUsuario.PasswordHash));
+                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(pUsuario.Password));
                 var strEncriptar = string.Concat(result.Select(b => b.ToString("x2").ToLower()));
-                pUsuario.PasswordHash = strEncriptar;
+                pUsuario.Password = strEncriptar;
             }
         }
     }

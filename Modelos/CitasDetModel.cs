@@ -14,11 +14,11 @@ namespace WebApi.Citas.ClientesApp.Modelos
             [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("idcitadet")]
-            public long IdCitaDet { get; set; }
+            public int IdCitaDet { get; set; }
 
         [ForeignKey("Citas")]
         [Column("idcita")]
-            public long? IdCita { get; set; }
+            public int? IdCita { get; set; }
 
             [ForeignKey("Productos")]
             [Column("producto")]

@@ -1,19 +1,26 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using citasApp.clientes.DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebApi.Citas.ClientesApp.Auth;
 using WebApi.Citas.ClientesApp.DAL;
+using WebApi.Citas.ClientesApp.MailBoxService;
 using WebApi.Citas.ClientesApp.Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<ClientesDAL>();
+builder.Services.AddScoped<CitasDAL>();
+builder.Services.AddScoped<ServicioEmailBox>();
+builder.Services.AddScoped<AsesoresDAL>();
+builder.Services.AddScoped<EmpresaDAL>();
+builder.Services.AddScoped<ProductosDAL>();
+builder.Services.AddScoped<administradorDAL>();
+builder.Services.AddMemoryCache();
 
-// Configurar servicios
-builder.Services.AddScoped<administradorDAL>();  // Registra administradorDAL como servicio
-builder.Services.AddMemoryCache();  // Registrar IMemoryCache para el controlador de Login
-builder.Services.AddScoped<userModel>();
-// Configurar CORS
+builder.Services.AddScoped<Logins,userModel>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyPolicy", builder =>
@@ -24,15 +31,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-
-// Configurar DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BDConexion>(options =>
     options.UseSqlServer(connectionString));
 
-// Configurar autenticación JWT
 var jwtKey = builder.Configuration["JwtSetting:_Key"];
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,14 +55,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true
     };
 });
-
-// Registrar servicio de autenticación personalizado
 builder.Services.AddSingleton(new JwtAuthenticationService(jwtKey));
-
-// Registrar IMemoryCache
-builder.Services.AddMemoryCache();  // Esta línea es importante
-
-// Configurar controladores y JSON
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -66,7 +64,6 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Configurar Swagger con soporte para JWT
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiRest", Version = "v1" });
@@ -93,12 +90,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Construir la aplicación
 var app = builder.Build();
 
-// Configurar el pipeline de middleware
-
-// Mostrar excepciones y Swagger en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -108,15 +101,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Aplicar política de CORS
 app.UseCors("MyPolicy");
 
-// Configurar autenticación y autorización
 app.UseAuthentication();
+
 app.UseAuthorization();
 
-// Mapear controladores
 app.MapControllers();
 
-// Ejecutar la aplicación
 app.Run();
