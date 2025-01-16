@@ -2,11 +2,13 @@
 using WebApi.Citas.ClientesApp.Modelos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace WebApi.Citas.ClientesApp.Controllers.asesoresControllers
 {
     [Route("api/Syscome/asesor")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class frm_AsesoresController : ControllerBase
     {
         private readonly AsesoresDAL _asesor;

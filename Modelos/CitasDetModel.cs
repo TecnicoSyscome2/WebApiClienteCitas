@@ -12,12 +12,12 @@ namespace WebApi.Citas.ClientesApp.Modelos
     public class CitasDetModel
     {     
             [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("idcitadet")]
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            [Column("idcitadet")]
             public int IdCitaDet { get; set; }
 
-        [ForeignKey("Citas")]
-        [Column("idcita")]
+            [ForeignKey("Citas")]
+            [Column("idcita")]
             public int? IdCita { get; set; }
 
             [ForeignKey("Productos")]
@@ -30,7 +30,10 @@ namespace WebApi.Citas.ClientesApp.Modelos
             [Column("valortotal", TypeName = "decimal(12,2)")]
             public decimal? ValorTotal { get; set; }
 
-        public virtual ProductosModel? Productos { get; set; }
-        public virtual CitasModel? Citas { get; set; }
+            [Column("fecharegistro")]
+            public DateTime? fecharegistro { get; set; }
+
+            public virtual ProductosModel? Productos { get; set; }
+            public virtual CitasModel? Citas { get; set; }
     }
 }

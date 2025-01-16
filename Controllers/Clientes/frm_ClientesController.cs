@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Citas.ClientesApp.Modelos;
 using WebApi.Citas.ClientesApp.DAL;
 using citasApp.clientes.DAL;
+using Microsoft.AspNetCore.Cors;
 namespace WebApi.Citas.ClientesApp.Controllers.Usuarios
 {
     [Route("api/Syscome/cliente")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class frm_ClientesController : ControllerBase
     {
         private readonly ClientesDAL _client;

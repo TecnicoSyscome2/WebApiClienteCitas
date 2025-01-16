@@ -56,4 +56,5 @@ namespace WebApi.Citas.ClientesApp.Modelos
         cancelada
        // Finalizada
     }
+
 }

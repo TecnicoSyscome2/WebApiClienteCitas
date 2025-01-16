@@ -20,11 +20,25 @@ namespace WebApi.Citas.ClientesApp.DAL
         {
             return await _context.productos.Where(e => e.IdEmpresa == id).ToListAsync();
         }
+        //public async Task<ProductosModel> GetEspecialidadByIdAsync(long id)
+        //{
+        //    // Obtiene solo la especialidad del producto por ID
+        //    var especialidad = await _context.productos
+        //                                     .Where(p => p.Id == id)
+        //                                     .Select(p => new ProductosModel
+        //                                     {
+        //                                         Especialidad = p.Especialidad
+        //                                     })
+        //                                     .FirstOrDefaultAsync();
+
+        //    return especialidad;
+        //}
+
         public async Task<ProductosModel> GetEspecialidadByIdAsync(long id)
         {
             // Obtiene solo la especialidad del producto por ID
             var especialidad = await _context.productos
-                                             .Where(p => p.Id == id)
+                                             .Where(p => p.IdEmpresa == id)
                                              .Select(p => new ProductosModel
                                              {
                                                  Especialidad = p.Especialidad

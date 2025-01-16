@@ -19,20 +19,59 @@ namespace WebApi.Citas.ClientesApp.DAL
 
         public async Task<CitasModel> CrearCita(CitasModel nuevaCita)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            if (nuevaCita.AsesorId.HasValue)
+            try
             {
-                var asesor = await _context.asesores.FindAsync(nuevaCita.AsesorId);
-                if (asesor == null)
+                // Verifica si el asesor existe
+                if (nuevaCita.AsesorId.HasValue)
                 {
-                    throw new ArgumentException("El asesor especificado no existe.");
+                    var asesor = await _context.asesores.FindAsync(nuevaCita.AsesorId);
+                    if (asesor == null)
+                    {
+                        throw new ArgumentException("El asesor especificado no existe.");
+                    }
                 }
-            }
 
-            _context.citas.Add(nuevaCita);
-            await _context.SaveChangesAsync();
-            return nuevaCita;
+                _context.citas.Add(nuevaCita);
+                await _context.SaveChangesAsync();
+
+ 
+                long productoId = 1; 
+                var producto = await _context.productos.FindAsync(productoId);
+                if (producto == null)
+                {
+                    throw new ArgumentException("El producto especificado no existe.");
+                }
+
+                int cantidad = 1; 
+                decimal valorTotal = (producto.Precio ?? 0) * cantidad;
+
+                var nuevaCitaDet = new CitasDetModel
+                {
+                    IdCita = nuevaCita.Id,
+                    Producto = producto.Id,
+                    Cantidad = cantidad,
+                    ValorTotal = valorTotal,
+                    fecharegistro = nuevaCita.Fecha,
+                };
+
+                _context.citasdet.Add(nuevaCitaDet);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return nuevaCita;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+
+                Console.WriteLine($"Error al crear la cita: {ex.Message}");
+                throw; 
+            }
         }
+
 
         public async Task<List<CitasModel>> ObtenerCitas()
         {

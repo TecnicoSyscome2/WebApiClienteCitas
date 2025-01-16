@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System;
+using Microsoft.AspNetCore.Cors;
 
 namespace WebApi.Citas.ClientesApp.Controllers.cita
 {
     [Route("api/Syscome/cita")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class frm_CitasController : ControllerBase
     {
         private readonly CitasDAL _citaService;
@@ -71,6 +73,8 @@ namespace WebApi.Citas.ClientesApp.Controllers.cita
                 return StatusCode(500, new { mensaje = "Error interno del servidor", detalle = ex.Message });
             }
         }
+
+
 
         //[HttpPost]
         //public async Task<IActionResult> CrearCita([FromBody] CrearCitaRequestModel request)

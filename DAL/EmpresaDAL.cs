@@ -28,5 +28,15 @@ namespace WebApi.Citas.ClientesApp.DAL
         {
             return await _context.empresas.FindAsync(id);
         }
+
+        public async Task<string?> GetNombreAsesorEmpresaByIdAsync(int id)
+        {
+            // Busca la empresa por su ID
+            var empresa = await _context.empresas.FirstOrDefaultAsync(e => e.IdEmpresa == id);
+
+            // Retorna el campo NombreAsesor si se encuentra, o null si no existe
+            return empresa?.NombreAsesor;
+        }
+
     }
 }
